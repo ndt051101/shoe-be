@@ -153,7 +153,7 @@ const editProduct = async (req, res, next) => {
 };
 
 const deleteProduct = async (req, res, next) => {
-    const { _id } = req.body;
+    const { _id } = req.query;
 
     await Product.deleteOne({ _id: _id });
 

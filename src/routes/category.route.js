@@ -10,9 +10,9 @@ const passportConfig = require("../middlewares/passport");
 const customPassport = require("../middlewares/customPassport");
 
 router.get("/", categoryController.index);
-router.post("/", categoryController.newCategory);
+router.post("/", customPassport.passportJWTAdmin, categoryController.newCategory);
 router.get("/:_id", categoryController.getProductByCategory);
-router.put("/edit", categoryController.editCategory);
-router.delete("/delete", categoryController.deleteCategory);
+router.put("/edit", customPassport.passportJWTAdmin, categoryController.editCategory);
+router.delete("/delete", customPassport.passportJWTAdmin, categoryController.deleteCategory);
 
 module.exports = router;
