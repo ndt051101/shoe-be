@@ -161,7 +161,7 @@ const editUser = async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
-    const { _id } = req.body;
+    const { _id } = req.query;
 
     await User.deleteOne({ _id: _id });
 

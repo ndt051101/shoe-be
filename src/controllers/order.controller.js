@@ -152,10 +152,38 @@ const deliveredOrder = async (req, res, next) => {
     })
 }
 
+const searchOrder = async (req, res, next) => {
+    const { code, status } = req.query;
+
+    // const productFound = await Product.aggregate([
+    //     {$match: { name: { $regex : name, $options: 'i' } }},
+    //     {$project: { _id: 1, name: 1, image: 1 }}
+    // ]).populate('category', 'name')
+
+    const orders = await Order.find(
+        { 
+            name: { $regex: code, $options: "i" },
+            status: status
+        },
+        {
+            code: 1,
+            total: 1,
+            ordersInfo: 1,
+            createdAt: 1,
+        }
+    )
+
+    return res.status(200).json({
+        success: true,
+        data: orders
+    });
+};
+
 module.exports = {
     index,
     newOrder,
     detailsOrder,
     deliveringOrder,
-    deliveredOrder
+    deliveredOrder,
+    searchOrder
 }

@@ -1,6 +1,7 @@
 const Order = require('../models/Order')
 const OrderInfo = require('../models/OrderInfo')
 const Notify = require('../models/Notify')
+const Product = require('../models/Product')
 const NotifyController = require('./notify.controller')
 const makeID = require('../utils/makeID')
 const moment = require('moment')
@@ -92,8 +93,51 @@ const deliveredOrder = async (req, res, next) => {
     })
 }
 
+const searchOrder = async (req, res, next) => {
+    const { code, status } = req.query;
+
+
+    // const productFound = await Product.aggregate([
+    //     {$match: { name: { $regex : name, $options: 'i' } }},
+    //     {$project: { _id: 1, name: 1, image: 1 }}d
+    // ]).populate('category', 'name')
+
+    const orders = await Order.find(
+        { 
+            code: { $regex: code, $options: "i" },
+            status: +status
+        },
+        {
+            code: 1,
+            total: 1,
+            quantity: { $cond: { if: { $isArray: "$ordersInfo" }, then: { $size: "$ordersInfo" }, else: "NA"} },
+            createdAt: 1,
+        }
+    )
+
+    return res.status(200).json({
+        success: true,
+        data: orders
+    });
+};
+
+const searchProduct = async (req, res, next) => {
+    const { name } = req.query;
+
+    const products = await Product.find(
+        { name: { $regex: name, $options: "i" } }
+    ).populate("category", "name");
+
+    return res.status(200).json({
+        success: true,
+        data: products
+    });
+};
+
 module.exports = {
     index,
     deliveringOrder,
-    deliveredOrder
+    deliveredOrder,
+    searchOrder,
+    searchProduct
 }
